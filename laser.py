@@ -4,7 +4,7 @@ import pygame
 class Laser(pygame.sprite.Sprite):
     def __init__(self, pos, speed, screen_height):
         super().__init__()
-        self.image = pygame.image.load('sprites/laser_blue.png').convert_alpha()
+        self.image = pygame.image.load('sprites/lasers/laser_blue_up.png').convert_alpha()
         self.rect = self.image.get_rect(center=pos)
         self.speed = speed
         self.height_y_constraint = screen_height
@@ -14,5 +14,5 @@ class Laser(pygame.sprite.Sprite):
             self.kill()
 
     def update(self):
-        self.rect.y -= self.speed
+        self.rect.y += self.speed
         self.destroy()
