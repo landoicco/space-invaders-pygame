@@ -12,6 +12,11 @@ class Game:
         player_sprite = Player((screen_width / 2, screen_height - 5), screen_width, 5)
         self.player = pygame.sprite.GroupSingle(player_sprite)
 
+        # Health and score setup
+        self.lives = 3
+        self.live_surface = pygame.image.load('sprites/hud/playerlifes/blue.png').convert_alpha()
+        self.live_x_start_pos = screen_width - (self.live_surface.get_size()[0] * 2 + 20)
+
         # Obstacles setup
         self.obstacles = pygame.sprite.Group()
         self.obstacle_amount = 4
@@ -35,6 +40,7 @@ class Game:
 
         self.extra_alien_timer()
         self.collision_checks()
+        self.display_lives()
 
         self.ufos.update(self.ufo_x_speed)
         self.ufo_position_checker()
@@ -114,7 +120,10 @@ class Game:
                 # Player collisions
                 if pygame.sprite.spritecollide(laser, self.player, False):
                     laser.kill()
-                    print('Player was killed!')
+                    self.lives -= 1
+                    if self.lives <= 0:
+                        pygame.quit()
+                        sys.exit()
 
                 # Obstacle collisions
                 if pygame.sprite.spritecollide(laser, self.obstacles, True):
@@ -125,7 +134,13 @@ class Game:
             for ufo in self.ufos:
                 pygame.sprite.spritecollide(ufo, self.obstacles, True)
                 if pygame.sprite.spritecollide(ufo, self.player, False):
-                    print('Ufo collide with player!')
+                    pygame.quit()
+                    sys.exit()
+
+    def display_lives(self):
+        for live in range(self.lives - 1):
+            x = self.live_x_start_pos + (live * (self.live_surface.get_size()[0] + 5))
+            screen.blit(self.live_surface, (x, 15))
 
 
 if __name__ == '__main__':
