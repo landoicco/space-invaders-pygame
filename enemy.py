@@ -8,6 +8,13 @@ class Ufo(pygame.sprite.Sprite):
         self.image = pygame.image.load(file_path).convert_alpha()
         self.rect = self.image.get_rect(topleft=(x, y))
 
+        if color == 'red':
+            self.value = 10
+        elif color == 'yellow':
+            self.value = 20
+        else:
+            self.value = 30
+
     def update(self, x_speed):
         self.rect.x += x_speed
 
