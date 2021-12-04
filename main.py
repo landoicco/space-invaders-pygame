@@ -34,6 +34,7 @@ class Game:
         self.player.draw(screen)
 
         self.extra_alien_timer()
+        self.collision_checks()
 
         self.ufos.update(self.ufo_x_speed)
         self.ufo_position_checker()
@@ -89,6 +90,42 @@ class Game:
         if self.extra_spawn_time <= 0:
             self.alien.add(Alien(choice(['right', 'left']), screen_width, 15))
             self.extra_spawn_time = randint(400, 800)
+
+    def collision_checks(self):
+
+        # Player lasers
+        if self.player.sprite.lasers:
+            for laser in self.player.sprite.lasers:
+                # Obstacle collisions
+                if pygame.sprite.spritecollide(laser, self.obstacles, True):
+                    laser.kill()
+
+                # Ufo collisions
+                if pygame.sprite.spritecollide(laser, self.ufos, True):
+                    laser.kill()
+
+                # Alien collisions
+                if pygame.sprite.spritecollide(laser, self.alien, True):
+                    laser.kill()
+
+        # Ufo lasers
+        if self.ufo_lasers:
+            for laser in self.ufo_lasers:
+                # Player collisions
+                if pygame.sprite.spritecollide(laser, self.player, False):
+                    laser.kill()
+                    print('Player was killed!')
+
+                # Obstacle collisions
+                if pygame.sprite.spritecollide(laser, self.obstacles, True):
+                    laser.kill()
+
+        # Ufo's
+        if self.ufos:
+            for ufo in self.ufos:
+                pygame.sprite.spritecollide(ufo, self.obstacles, True)
+                if pygame.sprite.spritecollide(ufo, self.player, False):
+                    print('Ufo collide with player!')
 
 
 if __name__ == '__main__':
