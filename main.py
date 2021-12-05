@@ -35,6 +35,15 @@ class Game:
         self.alien = pygame.sprite.GroupSingle()
         self.extra_spawn_time = randint(40, 80)
 
+        # Audio
+        self.bg_music = pygame.mixer.Sound('assets/music/wind.mp3')
+        self.bg_music.set_volume(0.2)
+        self.bg_music.play(loops=-1)
+        self.explosion_sfx = pygame.mixer.Sound('assets/sfx/explosion.wav')
+        self.explosion_sfx.set_volume(0.5)
+        self.laser_sfx = pygame.mixer.Sound('assets/sfx/laser_1.wav')
+        self.laser_sfx.set_volume(0.3)
+
     def run(self):
         self.player.update()
         self.player.sprite.lasers.draw(screen)
@@ -80,6 +89,7 @@ class Game:
             random_ufo = choice(self.ufos.sprites())
             laser_sprite = Laser(random_ufo.rect.center, 6, screen_height)
             self.ufo_lasers.add(laser_sprite)
+            self.laser_sfx.play()
 
     def ufos_setup(self, rows, cols, x_distance=120, y_distance=120, x_offset=120, y_offset=50):
         for row_index, row in enumerate(range(rows)):
@@ -114,11 +124,13 @@ class Game:
                 if ufos_hit:
                     for ufo in ufos_hit:
                         self.score += ufo.value
+                    self.explosion_sfx.play()
                     laser.kill()
 
                 # Alien collisions
                 if pygame.sprite.spritecollide(laser, self.alien, True):
                     self.score += 100
+                    self.explosion_sfx.play()
                     laser.kill()
 
         # Ufo lasers
